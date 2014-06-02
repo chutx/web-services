@@ -31,11 +31,23 @@ public class CustomerResource {
 	@POST
 	@Consumes(value = { "application/xml", "application/json" })
 	public Response createCustomer(InputStream is) {
+		System.out.println("Creating customer ...");
 		Customer customer = CustomerUtil.readCustomer(is);
 		customer.setId(idCounter.incrementAndGet());
 		customerDB.put(customer.getId(), customer);
 		System.out.println("Created customer " + customer.getId());
-		return Response.created(URI.create("/customers/" + customer.getId()))
+		return Response.created(URI.create("/customer/" + customer.getId()))
+				.build();
+	}
+	
+	@POST
+	@Consumes(value = {"application/xml"})
+	@Path(value="/jaxb")
+	public Response createCustomerFromJaxb(Customer customer){
+		customer.setId(idCounter.incrementAndGet());
+		customerDB.put(customer.getId(), customer);
+		System.out.println("Created customer " + customer.getId());
+		return Response.created(URI.create("/customer/" + customer.getId()))
 				.build();
 	}
 
